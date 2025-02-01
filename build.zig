@@ -90,7 +90,7 @@ pub fn build(b: *std.Build) void {
     test_step.dependOn(&run_exe_unit_tests.step);
 
     const exe_tests = b.addTest(.{
-        .root_source_file = .{ .path = "src/tests.zig" },
+        .root_source_file = .{ .cwd_relative = "src/tests.zig" },
         .target = target,
         .optimize = optimize,
     });

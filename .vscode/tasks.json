@@ -1,0 +1,23 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+      {
+          "label": "build",
+          "type": "shell",
+          "command": "zig build",
+          "group": {
+              "kind": "build",
+              "isDefault": true
+          }
+      },
+      {
+          "label": "build-test",
+          "type": "shell",
+          "command": "zig test ${file} -femit-bin=${workspaceFolder}/zig-out/bin/test",
+          "group": {
+              "kind": "test",
+              "isDefault": true
+          }
+      }
+  ]
+}
