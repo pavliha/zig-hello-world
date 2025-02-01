@@ -57,11 +57,11 @@ pub const RtspRequest = struct {
         if (headers.get("Content-Length")) |length_str| {
             const length = try std.fmt.parseInt(usize, length_str, 10);
             if (length > 0) {
-                const body_buffer = try allocator.alloc(u8, length);
                 if (lines.next()) |body_content| {
-                    // Copy body_content into our allocated buffer.
-                    std.mem.copy(u8, body_buffer, body_content);
-                    body = body_buffer;
+                    if (body_content.len >= length) {
+                        const body_buffer = try allocator.dupe(u8, body_content[0..length]);
+                        body = body_buffer;
+                    }
                 }
             }
         }
@@ -119,7 +119,6 @@ pub const RtspResponse = struct {
         try self.headers.put(key, val);
     }
 
-    // We now use the stored allocator rather than taking one as an argument.
     pub fn format(self: *RtspResponse) ![]const u8 {
         var list = std.ArrayList(u8).init(self.allocator);
         defer list.deinit();
