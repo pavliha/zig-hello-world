@@ -211,3 +211,42 @@ test "slices: to the end" {
     //  std.debug.print("Total, {d}", .{total(slice)});
     try expect(total(slice) == 15);
 }
+
+test "enums: enum original value " {
+    // const Direction = enum { north, west, south, east };
+    const Value = enum(u8) { zero, one, two };
+
+    try expect(@intFromEnum(Value.one) == 1);
+}
+
+test "enums: enum overrides" {
+    const NumericThreshold = enum(u32) { hundred = 100, thousand = 1000, million = 1000000, next };
+
+    try expect(@intFromEnum(NumericThreshold.hundred) == 100);
+    try expect(@intFromEnum(NumericThreshold.next) == 1000001);
+}
+
+test "enums with methods" {
+    const Suit = enum {
+        clubs,
+        spades,
+        diamonds,
+        hearts,
+        pub fn isClubs(self: @This()) bool {
+            return self == .clubs;
+        }
+    };
+
+    try expect(Suit.spades.isClubs() == Suit.isClubs(.spades));
+}
+
+test "enums: namespaced variables" {
+    const Mode = enum {
+        var count: u32 = 0;
+        on,
+        off,
+    };
+
+    Mode.count += 1;
+    try expect(Mode.count == 1);
+}
