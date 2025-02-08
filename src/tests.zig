@@ -182,3 +182,32 @@ test "many items pointer" {
     doupleAllManyPointer(many_items_ptr, buffer.len);
     for (buffer) |byte| try expect(byte == 2);
 }
+
+fn total(values: []const u8) usize {
+    var sum: usize = 0;
+    for (values) |value| sum += value;
+
+    return sum;
+}
+
+test "slices" {
+    const array = [_]u8{ 1, 2, 3, 4, 5 };
+    const slice = array[0..3];
+
+    try expect(total(slice) == 6);
+}
+
+test "slices: type of slice" {
+    const array = [_]u8{ 1, 2, 3, 4, 5 };
+    const slice = array[0..3];
+
+    try expect(@TypeOf(slice) == *const [3]u8);
+}
+
+test "slices: to the end" {
+    const array = [_]u8{ 1, 2, 3, 4, 5 };
+    const slice = array[0..];
+
+    //  std.debug.print("Total, {d}", .{total(slice)});
+    try expect(total(slice) == 15);
+}
