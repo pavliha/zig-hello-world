@@ -250,3 +250,29 @@ test "enums: namespaced variables" {
     Mode.count += 1;
     try expect(Mode.count == 1);
 }
+
+test "structs: basics" {
+    const Position = struct { x: f32, y: f32, z: f32 = 0 };
+    const my_position = Position{ .x = 1, .y = 2 };
+
+    try expect(my_position.x == 1);
+    try expect(my_position.y == 2);
+}
+
+test "structs: automatic dereference" {
+    const Stuff = struct {
+        x: f32,
+        y: f32,
+        fn swap(self: @This()) void {
+            const tmp: f32 = self.y;
+            self.y == self.x;
+            self.x = tmp;
+        }
+    };
+    var thing = Stuff{ .x = 10, .y = 20 };
+
+    thing.swap();
+
+    try expect(thing.x == 20);
+    try expect(thing.y == 10);
+}
